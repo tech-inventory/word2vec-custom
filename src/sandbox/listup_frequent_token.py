@@ -99,17 +99,33 @@ def main():
     :return:
     """
     token_aggregator = TokenAggregator()
-    extract_path = "../corpus/wikipedia/extracted/AA/wiki_00"
-    with open(extract_path, 'r') as fp:
-        view_count = 0
-        while True:
-            _line = fp.readline()
-            if len(_line) == 0:
-                break
 
-            _parsed = json.loads(_line)
-            token_aggregator.parse(_parsed['text'])
-        token_aggregator.pickup_frequent_ones(n=100)
+    # コーパスの一部をサンプリング
+    corpus_files = ['../corpus/wikipedia/extracted/AA/wiki_00',
+                    '../corpus/wikipedia/extracted/AA/wiki_01',
+                    '../corpus/wikipedia/extracted/AA/wiki_02',
+                    '../corpus/wikipedia/extracted/AA/wiki_03',
+                    '../corpus/wikipedia/extracted/AA/wiki_04',
+                    '../corpus/wikipedia/extracted/AA/wiki_05',
+                    '../corpus/wikipedia/extracted/AA/wiki_06',
+                    '../corpus/wikipedia/extracted/AA/wiki_07',
+                    '../corpus/wikipedia/extracted/AA/wiki_08',
+                    '../corpus/wikipedia/extracted/AA/wiki_09'
+                    ]
+
+    # extract_path = "../corpus/wikipedia/extracted/AA/wiki_00"
+    for _extract_path in corpus_files:
+        print(f'Processing {_extract_path} ...')
+        with open(_extract_path, 'r') as fp:
+            view_count = 0
+            while True:
+                _line = fp.readline()
+                if len(_line) == 0:
+                    break
+
+                _parsed = json.loads(_line)
+                token_aggregator.parse(_parsed['text'])
+    token_aggregator.pickup_frequent_ones(n=100)
 
 if __name__ == '__main__':
     main()

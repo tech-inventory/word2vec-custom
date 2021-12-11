@@ -1,10 +1,6 @@
 """
-    Wikipedia の抽出結果を形態素に分割し、分析する
-
+    入力されたテキストを形態素（＝トークン）に分割し、それを選別した結果を返す。
 """
-
-import json
-import pprint
 from parser.mecab import Tagger
 mecab_tagger = Tagger()
 
@@ -15,7 +11,7 @@ def is_exclude(token):
     """
     形態素1個のトークン情報を受け取り、除外対象か判定する。
     :param token:
-    :return:
+    :return: 判定結果(True/False)
     """
     has_exclude = False
     if token['pos_category_1st'] in exclude_pos_config:
@@ -51,14 +47,14 @@ def is_exclude(token):
 
     return has_exclude
 
-def parse(text: str):
+def filter(text: str):
     """
     テキストを受け取り、形態素に分割する
     :param text:
     :return:
     """
+    filtered = []
     parse_results = mecab_tagger.parse(text)
-    # pprint.pprint(parse_results)
     for _token in parse_results:
         _processed = ''
         # 品詞カテゴリ１が除外対象 だったら表示しない
@@ -68,42 +64,6 @@ def parse(text: str):
                 _processed = _token['prototype']
             else:
                 _processed = _token['token']
-            print(f'{_processed}', end=' ')
-            # print(f'{_processed}({_token["pos_category_1st"]}) ', end=' ')
-            # print(_token)
-
-
-
-
-def main():
-    """
-    WikiExtractor の抽出結果(JSONL形式)を試験的に表示する。
-    :return:
-    """
-    extract_path = "../corpus/wikipedia/extracted/AA/wiki_00"
-    with open(extract_path, 'r') as fp:
-        view_count = 0
-        while True:
-            _line = fp.readline()
-            # print(_line)
-            _parsed = json.loads(_line)
-            pprint.pprint(_parsed)
-
-            _sentences = str(_parsed['text']).split("\n")
-            for _sen in _sentences:
-                print(_sen)
-                print('.' * 70)
-                if _sen.startswith('[[File:') and _sen.endswith(']]'):
-                    print("skipping image tag")
-                    continue
-
-                parse(_sen)
-                print("\n")
-                print('=' * 70)
-            view_count += 1
-            if view_count > 10:
-                break
-
-
-if __name__ == '__main__':
-    main()
+            # print(f'{_processed}', end=' ')
+            filtered.append(_token)
+    return filtered
