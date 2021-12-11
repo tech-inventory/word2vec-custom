@@ -65,5 +65,6 @@ def filter(text: str):
             else:
                 _processed = _token['token']
             # print(f'{_processed}', end=' ')
+            _token['processed'] = _processed
             filtered.append(_token)
     return filtered
