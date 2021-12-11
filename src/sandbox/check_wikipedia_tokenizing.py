@@ -22,7 +22,7 @@ def is_exclude(token):
         has_exclude = True
 
     if token['pos_category_1st'] == '自立':
-        if token['prototype'] in ('する', 'なる', 'なす', 'できる', 'ある'):
+        if token['prototype'] in ('する', 'なる', 'なす', 'できる', 'ある', 'いる'):
             has_exclude = True
 
     if token['pos_category_1st'] == '一般':
@@ -30,18 +30,19 @@ def is_exclude(token):
             has_exclude = True
 
     if token['pos_category_1st'] == '接尾':
-        if token['prototype'] in ('れる'):
+        if token['prototype'] in ('れる', 'られる', 'せる'):
             has_exclude = True
 
     if token['pos_category_1st'] == '非自立':
-        if token['prototype'] in ('いる', 'よう', 'にくい'):
+        if token['prototype'] in ('いる', 'よう', 'にくい', 'こと', 'おる', 'の'):
             has_exclude = True
 
     if token['pos_type'] == '助動詞':
-        if token['prototype'] in ('だ', 'ある', 'た', 'ない'):
+        if token['prototype'] in ('だ', 'ある', 'た', 'ない', 'ぬ'):
             has_exclude = True
 
-
+    if token['pos_type'] == '接続詞':
+        has_exclude = True
 
     return has_exclude
 
@@ -86,11 +87,12 @@ def main():
             _sentences = str(_parsed['text']).split("\n")
             for _sen in _sentences:
                 print(_sen)
+                print('.' * 70)
                 parse(_sen)
                 print("\n")
                 print('=' * 70)
             view_count += 1
-            if view_count > 1:
+            if view_count > 10:
                 break
 
 
