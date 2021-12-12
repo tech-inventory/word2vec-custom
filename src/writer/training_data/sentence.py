@@ -1,9 +1,10 @@
 """
-    Wikipedia 用：学習データの書き出し処理
+    学習データの書き出し処理 : 文単位の学習データ
 """
 import os
 
-class WikipediaTrainingdataWriter(object):
+
+class SentenceTrainingdataWriter(object):
     """
         Wikipedia 用の学習データ出力クラス
     """

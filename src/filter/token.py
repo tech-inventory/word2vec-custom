@@ -47,24 +47,35 @@ def is_exclude(token):
 
     return has_exclude
 
-def filter(text: str):
+
+def filter_token(tokens = None, text: str = None):
     """
-    テキストを受け取り、形態素に分割する
-    :param text:
+    トークン列またはテキストを受け取り、形態素に分割する
+    :params tokens: フィルタにかけるトークン列
+    :param text: トークン化されていないテキスト
     :return:
     """
     filtered = []
-    parse_results = mecab_tagger.parse(text)
-    for _token in parse_results:
-        _processed = ''
-        # 品詞カテゴリ１が除外対象 だったら表示しない
-        if is_exclude(_token) is not True:
-            # 基本形を優先的に採用する
-            if _token['prototype'] != '*':
-                _processed = _token['prototype']
-            else:
-                _processed = _token['token']
-            # print(f'{_processed}', end=' ')
-            _token['processed'] = _processed
-            filtered.append(_token)
-    return filtered
+    if tokens is None:
+        if text is not None:
+            tokens = mecab_tagger.parse(text)
+
+    if tokens is not None:
+        # parse_results = mecab_tagger.parse(text)
+        for _token in tokens:
+            _processed = ''
+            # 品詞カテゴリ１が除外対象 だったら表示しない
+            if is_exclude(_token) is not True:
+                # 基本形を優先的に採用する
+                if _token['prototype'] != '*':
+                    _processed = _token['prototype']
+                else:
+                    _processed = _token['token']
+                # print(f'{_processed}', end=' ')
+                _token['processed'] = _processed
+                filtered.append(_token)
+        return filtered
+    else:
+        return None
+
+
