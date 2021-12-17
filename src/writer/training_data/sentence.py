@@ -21,19 +21,23 @@ class SentenceTrainingdataWriter(object):
         self.buffer_size = buffer_size
         self.writing_number = 0  # 分割出力する際のファイル番号
         self.file_name_template = 'wiki_sentences_{number}.txt'  # 出力ファイル名の書式
-        self.current_buffer = ''   # 現在のバッファ
+        self.current_buffer = []   # 現在のバッファ
+        self.current_buffer_size = 0
 
-    def write(self, sentence):
+    def write(self, filtered_tokens):
         """
             １つの文を表すトークン列を指定し、1行書き出す。
             トークン列は、必ずフィルタ後のモノを使うこと。(トークンの属性に`processed`という値が付与されている）
-        :param sentence:
+        :param filtered_tokens:
         :return:
         """
-        if type(sentence) in [list, tuple]:
-            self.current_buffer += [_['processed'] for _ in sentence]
-            if len(self.current_buffer) > self.buffer_size:
-                self.flush_buffer()
+        if type(filtered_tokens) in [list, tuple]:
+            if len(filtered_tokens) > 0:
+                _sentence = ' '.join([_['processed'] for _ in filtered_tokens])
+                self.current_buffer.append(_sentence)
+                self.current_buffer_size += len(_sentence) + 1
+                if self.current_buffer_size > self.buffer_size:
+                    self.flush_buffer()
 
     def flush_buffer(self):
         """
@@ -42,9 +46,11 @@ class SentenceTrainingdataWriter(object):
         """
         _file_path = os.path.join(self.write_path, self.file_name_template.format(number=self.writing_number))
         with open(_file_path, 'w') as fp:
-            fp.write(self.current_buffer)
+            fp.write('\n'.join(self.current_buffer))
+            print(f'wrote training data : {_file_path} , {self.current_buffer_size} bytes')
 
-        self.current_buffer = ''
+        self.current_buffer = []
+        self.current_buffer_size = 0
         self.writing_number += 1
 
 
