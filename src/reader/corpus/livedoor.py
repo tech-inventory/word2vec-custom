@@ -17,7 +17,20 @@ class LivedoorCorpusReader(object):
         """
         self._base_path = base_path
         self._category_map = {}
+        self._category_map_rev = {}
         self.generate_category_map()
+
+    def get_category_name(self, id):
+        """
+        IDからカテゴリ名を復元
+        :param id:
+        :return:
+        """
+        _category_name = self._category_map_rev.get(id)
+        if _category_name is not None:
+            return _category_name
+        else:
+            return None
 
     def generate_category_map(self):
         """
@@ -31,6 +44,7 @@ class LivedoorCorpusReader(object):
 
         for _category_id, _category_name in enumerate(category_list):
             self._category_map[_category_name] = _category_id
+            self._category_map_rev[_category_id] = _category_name
 
     def __iter__(self):
         """
