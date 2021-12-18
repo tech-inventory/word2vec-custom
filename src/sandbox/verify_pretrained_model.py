@@ -18,10 +18,10 @@ from gensim.models.word2vec import Word2Vec
 from gensim.models.word2vec import KeyedVectors
 from gensim.models import keyedvectors
 
+from encoder.vector.text import TextVectorEncoder
 from filter.token import filter_token
 from reader.corpus.wikipedia import WikipediaCorpusReader
 from writer.training_data.sentence import SentenceTrainingdataWriter
-
 
 MECAB_TAGGER = Tagger()
 
@@ -120,6 +120,10 @@ def main():
     print('深層学習')
     pprint.pprint(wv.most_similar(positive=['深層学習'], topn=10))
 
+    # ベクトル変換試験
+    tvencoder = TextVectorEncoder(wv=wv)
+    vector_sample = tvencoder.encode('機械学習と深層学習の対応関係について考察してみる')
+    print(vector_sample)
 
 if __name__ == '__main__':
     main()
